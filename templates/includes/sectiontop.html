@@ -1,0 +1,52 @@
+{% load static %}
+<section class="section-pagetop bg-light py-4">
+  <div class="container">
+    <div class="row text-center">
+
+      <!-- Complaints -->
+      <div class="col-md-3 col-sm-6 mb-3">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <a href="{% url 'admin_dashboard' %}"><i class="fa fa-exclamation-triangle fa-2x text-danger mb-2"></i></a>
+            <a href="{% url 'admin_dashboard' %}"><h6 class="card-title text-muted">Complaints</h6></a>
+            <h4 class="font-weight-bold ">{{ total_count }}</h4>
+          </div>
+        </div>
+      </div>
+
+      <!-- Reported Complaints -->
+      <div class="col-md-3 col-sm-6 mb-3">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <a href="{% url 'reported_complaints' %}"><i class="fa-solid fa-flag fa-2x text-warning mb-2"></i></a>
+            <a href="{% url 'reported_complaints' %}"><h6 class="card-title text-muted">Reported Complaints</h6></a>
+            <h4 class="font-weight-bold">{{ total_reported_posts }}</h4>
+          </div>
+        </div>
+      </div>
+
+      <!-- Users -->
+      <div class="col-md-3 col-sm-6 mb-3">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <a href="{% url 'user_details' %}"><i class="fa-solid fa-users fa-2x text-info mb-2"></i></a>
+            <a href="{% url 'user_details' %}"><h6 class="card-title text-muted">Users</h6></a>
+            <h4 class="font-weight-bold">{{ total_users }}</h4>
+          </div>
+        </div>
+      </div>
+
+      <!-- Logged in as -->
+      <div class="col-md-3 col-sm-6 mb-3">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <i class="fa-solid fa-user fa-2x text-primary mb-2"></i>
+            <h6 class="card-title text-muted">Logged in as:</h6>
+            <h4 class="font-weight-bold">{{ user.username }}</h4>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>

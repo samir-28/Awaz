@@ -1,0 +1,53 @@
+{% load static %}
+<section class="section-pagetop bg-light py-4">
+  <div class="container">
+    <div class="row text-center">
+
+      <!-- Users -->
+      <div class="col-md-3 col-sm-6 mb-3">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <a href="{% url 'user_details' %}"><i class="fa-solid fa-users fa-2x text-info mb-2"></i></a>
+            <a href="{% url 'user_details' %}"><h6 class="card-title text-muted">Users</h6></a>
+            <h4 class="font-weight-bold">{{ total_users }}</h4>
+          </div>
+        </div>
+      </div>
+
+      <!-- Municipalities -->
+      <div class="col-md-3 col-sm-6 mb-3">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <i class="fa-solid fa-city fa-2x text-warning mb-2"></i>
+            <h6 class="card-title text-muted">Municipalities</h6>
+            <h4 class="font-weight-bold">{{ total_municipalities }}</h4>
+          </div>
+        </div>
+      </div>
+
+  
+      <!-- Categories -->
+      <div class="col-md-3 col-sm-6 mb-3">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <i class="fa-solid fa-layer-group fa-2x text-secondary mb-2"></i>
+            <h6 class="card-title text-muted">Categories</h6>
+            <h4 class="font-weight-bold">{{ total_categories }}</h4>
+          </div>
+        </div>
+      </div>
+
+      <!-- Wards -->
+      <div class="col-md-3 col-sm-6 mb-3">
+        <div class="card shadow-sm">
+          <div class="card-body">
+            <i class="fa-solid fa-map-location-dot fa-2x text-success mb-2"></i>
+            <h6 class="card-title text-muted">Wards</h6>
+            <h4 class="font-weight-bold">{{ total_wards }}</h4>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>

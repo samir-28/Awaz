@@ -1,0 +1,140 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<!-- SECTION PAGETOP -->
+{% include 'includes/sectiontop.html' %}
+<!-- SECTION CONTENT -->
+<section class="section-content padding-y">
+  <div class="container">
+    <div class="row">
+    <aside class="col-md-3">
+        <!-- Buttons -->
+        <a href="{% url 'user_details' %}" class="btn btn-primary btn-block mb-2">User Details</a>
+        <a href="{% url 'admin_dashboard'%}"><button class="btn btn-light btn-block"><i class="fa fa-arrow-left"></i> <span class="text">Back</span></button></a>
+        
+    </aside>
+
+      <!-- Main Content -->
+      <main class="col-md-9">
+        <header class="border-bottom mb-4 pb-2">
+          <h4 class="mb-0">All Complaints</h4>
+          <div class="form-inline">
+			      <span class="mr-md-auto"><b>{{ post_count }}</b> complaint found </span>
+          </div>
+        </header>
+
+        <div class="row">
+      
+      {% for complaint in complaints %} {% if complaint.is_hidden %}
+      <div class="col-md-6 mb-4">
+        <div class="card h-100 shadow-sm position-relative">
+          <!-- Status Badge -->
+          <div class="position-absolute top-0 end-0 m-2 d-flex justify-content-between gap-1">
+           <span
+              class="badge{% if complaint.status %}{% if complaint.status.name == 'Pending' %} bg-danger text-white{% elif complaint.status.name == 'In Progress' %} bg-warning text-dark
+                  {% elif complaint.status.name == 'Resolved' %} bg-success text-white{% else %} bg-secondary text-white{% endif %}{% else %} bg-secondary text-white{% endif %}">
+              {{ complaint.status.name|default:"N/A" }}
+            </span>
+          
+            <span
+              class=" ml-4 badge{% if complaint.is_hidden %} bg-dark text-white{% else %} bg-secondary text-white {% endif %}">
+              {% if complaint.is_hidden %}
+                Hidden
+              {% else %}
+                Not-hidden
+              {% endif %}
+            </span>
+          </div>
+          <!-- Image -->
+          {% if complaint.image %}
+          <img
+            src="{{ complaint.image.url }}"
+            class="card-img-top"
+            alt="Post media"
+            style="height: 300px; object-fit: contain"
+          />
+          {% else %}
+          <img
+            src="{% static 'images/complain.png' %}"
+            class="card-img-top"
+            alt="No image"
+            style="height: 300px; object-fit: contain"
+          />
+          {% endif %}
+
+          <div class="card-body d-flex flex-column">
+            <h5 class="card-title">{{ complaint.title }}</h5>
+
+            <p class="text-muted mb-2" style="font-size: 1rem">
+              <strong>Date:</strong> {{ complaint.created_at|date:"Y-m-d" }}<br />
+              <strong>Posted by:</strong> {{ complaint.user.username }}<br />
+              <strong>Municipality:</strong> {{ complaint.ward|default:"N/A"}}<br />
+              <strong>Ward:</strong> {% if complaint.ward %}Ward-{{ complaint.ward.ward_number }}{% else %}N/A{% endif %}<br />
+              <strong>Category:</strong> 
+              {{complaint.category.category_name|default:"N/A" }}
+            </p>
+
+            <p class="card-text flex-grow-1">
+              {{ complaint.description|truncatewords:20 }}
+              <a
+                href="{% url 'post_detail' complaint.id %}"
+                class="text-primary"
+                >View more</a
+              >
+            </p>
+
+            {% if user.user_type == 'admin' %}
+              <form method="POST" action="{% url 'admin_delete_complaint' complaint.id %}" style="display:inline;" 
+                    onsubmit="return confirm('Are you sure you want to delete this complaint?');">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-sm btn-outline-danger" title="Delete Complaint">
+                      <i class="fas fa-trash"></i>
+                  </button>
+              </form>
+              {% else %}
+              <button class="btn btn-sm btn-outline-danger" disabled title="You can't delete this">
+                  <i class="fas fa-trash"></i>
+              </button>
+              {% endif %}
+          </div>
+        </div>
+      </div>
+      {% endif %}{% empty %}
+      <p>No complaints found.</p>
+      {% endfor %}
+    </div>
+
+        <!-- Pagination -->
+        <nav class="mt-4" aria-label="Page navigation">
+          {% if posts.has_other_pages %}
+          <ul class="pagination">
+            {% if posts.has_previous %}
+            <li class="page-item"><a class="page-link" href="?page={{ posts.previous_page_number }}">Previous</a></li>
+            {% else %}
+            <li class="page-item disabled"><span class="page-link">Previous</span></li>
+            {% endif %}
+
+            {% for num in posts.paginator.page_range %}
+              {% if posts.number == num %}
+              <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+              {% else %}
+              <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+              {% endif %}
+            {% endfor %}
+
+            {% if posts.has_next %}
+            <li class="page-item"><a class="page-link" href="?page={{ posts.next_page_number }}">Next</a></li>
+            {% else %}
+            <li class="page-item disabled"><span class="page-link">Next</span></li>
+            {% endif %}
+          </ul>
+          {% endif %}
+        </nav>
+      </main>
+    </div>
+  </div>
+</section>
+
+{% endblock %}

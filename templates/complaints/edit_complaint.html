@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<section class="section-conten padding-y bg">
+  {% include 'includes/alerts.html' %}
+  <div class="container">
+    <div class="row">
+    <aside class="col-md-3">
+  <!--   SIDEBAR   -->
+ <a href="{%url 'home'%}" class="btn btn-outline-primary btn-block">Home</a>
+ <a href="{%url 'all_complaints'%}" class="btn btn-outline-primary btn-block">All Complaints</a>
+<a href="{%url 'my_complaints'%}" class="btn btn-outline-primary btn-block">My Complaints</a>
+ <a class="btn btn-light btn-block" href="javascript:history.back()"><i class="fa fa-arrow-left"></i> <span class="text">Back</span></a>
+  <!--   SIDEBAR .//END   -->
+</aside>
+
+
+      <main class="col-md-9">
+        <article class="card">
+            <header class="card-header d-flex justify-content-between align-items-center">
+              <strong class="d-inline-block mr-3">Edit Your Complaint</strong>
+              <a href="javascript:history.back()">
+                <button class="btn btn-sm btn-outline-danger">
+                  <i class="fas fa-remove"></i> Cancel
+                </button>
+              </a>
+            </header>
+
+          <div class="card-body">
+           <form action="{% url 'edit_complaint' complaint.id %}" method="POST" enctype="multipart/form-data">
+                {% csrf_token %}
+                <div class="form-group">
+                  <label>Title</label>
+                  <input type="text" name="title" class="form-control" placeholder="Enter complaint title" 
+                         value="{{ complaint.title }}" required>
+                </div>
+                
+                <div class="form-group">
+                  <label for="ward">Select Municipality and Ward:</label>
+                  <select name="ward_id" id="ward_id" class="form-control" required>
+                    <option value="">Select Ward</option>
+                    {% for ward in wards %}
+                      <option value="{{ ward.id }}" {% if ward.id == complaint.ward.id %}selected{% endif %}>
+                        {{ ward.municipality }} - Ward {{ ward.ward_number }}
+                      </option>
+                    {% endfor %}
+                  </select>
+                </div>
+            
+                <div class="form-group">
+                  <label>Category</label>
+                  <select name="category" class="form-control" required>
+                    <option value="">Select Category</option>
+                    {% for cat in categories %}
+                      <option value="{{ cat.id }}" {% if cat.id == complaint.category.id %}selected{% endif %}>
+                        {{ cat.category_name }}
+                      </option>
+                    {% endfor %}
+                  </select>
+                </div>
+            
+                <div class="form-group">
+                  <label>Description</label>
+                  <textarea name="description" class="form-control" rows="4" placeholder="Describe the issue in detail..." required>{{ complaint.description }}</textarea>
+                </div>
+                
+               <div class="form-group">
+                 <label for="image">Upload Image (optional)</label>
+                 <input type="file" name="image" id="image" > 
+                 {% if complaint.image %}
+                   <div class="mt-2">
+                     <label class="form-label">Current Image:</label>
+                     <div class="border p-2 rounded" style="max-width: 200px;">
+                       <img src="{{ complaint.image.url }}" alt="Current Image" class="img-fluid rounded">
+                     </div>
+                   </div>
+                 {% endif %}
+                 </div> 
+                <input type="submit" value="Update Complaint" class="btn btn-primary">
+                </form>
+            </div> <!-- card-body -->
+        </article>
+      </main>
+    </div> <!-- row -->
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,262 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+
+<!-- SECTION PAGETOP -->
+<!-- ========================= SECTION PAGETOP ========================= -->
+<!-- ========================= SECTION STATS CARDS ========================= -->
+<section class="section-pagetop bg-light py-4">
+  <div class="container">
+    <div class="row text-center">
+
+      <!-- Total Issues -->
+      <div class="col-md-3 col-sm-6 mb-3">
+        <div class="card shadow-sm border-0">
+          <div class="card-body">
+          <a href="{% url 'municipality_dashboard' %}"><i class="fa fa-exclamation-triangle fa-2x text-danger mb-2"></i></a>
+          <a href="{% url 'municipality_dashboard' %}"><h6 class="card-title text-muted">Total Complaints</h6></a>
+          <h4 class="font-weight-bold">{{ total_count }}</h4>
+          </div>
+        </div>
+      </div>
+
+      <!-- Pending Issues -->
+      <div class="col-md-3 col-sm-6 mb-3">
+        <div class="card shadow-sm border-0">
+          <div class="card-body">
+            <a href="{% url 'dashboard_my_search_complaints' %}?status=1"><i class="fa fa-hourglass-half fa-2x text-warning mb-2"></i></a>
+            <a href="{% url 'dashboard_my_search_complaints' %}?status=1"><h6 class="card-title text-muted">Pending Complaints</h6></a>
+            <h4 class="font-weight-bold">{{pending_count}}</h4>
+          </div>
+        </div>
+      </div>
+
+      <!-- In Progress Issues -->
+      <div class="col-md-3 col-sm-6 mb-3">
+        <div class="card shadow-sm border-0">
+          <div class="card-body">
+            <a href="{% url 'dashboard_my_search_complaints' %}?status=2"><i class="fa fa-spinner fa-2x text-info mb-2"></i></a>
+            <a href="{% url 'dashboard_my_search_complaints' %}?status=2"><h6 class="card-title text-muted">In Progress Complaints</h6></a>
+            <h4 class="font-weight-bold">{{in_progress_count}}</h4>
+          </div>
+        </div>
+      </div>
+
+      <!-- Resolved Issues -->
+      <div class="col-md-3 col-sm-6 mb-3">
+        <div class="card shadow-sm border-0">
+          <div class="card-body">
+            <a href="{% url 'dashboard_my_search_complaints' %}?status=3"><i class="fa fa-check-circle fa-2x text-success mb-2"></i></a>
+            <a href="{% url 'dashboard_my_search_complaints' %}?status=3"><h6 class="card-title text-muted">Resolved Complaints</h6></a>
+            <h4 class="font-weight-bold">{{resolved_count}}</h4>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- SECTION CONTENT -->
+<section class="section-content padding-y">
+  <div class="container">
+    <div class="row">
+
+           <aside class="col-md-3">
+        <!-- Category Filter Card 1 -->
+        <div class="card mb-3">
+          <article class="filter-group">
+            <header class="card-header">
+              <a href="#" data-toggle="collapse" data-target="#collapse_1" aria-expanded="true">
+                <i class="icon-control fa fa-chevron-down"></i>
+                <h6 class="title">Category</h6>
+              </a>
+            </header>
+            <div class="filter-content collapse show" id="collapse_1">
+              <div class="card-body">
+                <ul class="list-menu">
+                  <li><a href="{% url 'municipality_dashboard' %}">All Products</a></li>
+                  {% for category in links %}
+                    <li><a href="{% url 'dashboard_my_search_complaints' %}?category={{ category.id }}">{{ category.category_name }}</a></li>
+                  {% endfor %}
+                </ul>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <!-- Category Filter Card 3 -->
+        <div class="card mb-3">
+          <article class="filter-group">
+            <header class="card-header">
+              <a href="#" data-toggle="collapse" data-target="#collapse_3" aria-expanded="true">
+                <i class="icon-control fa fa-chevron-down"></i>
+                <h6 class="title">Status</h6>
+              </a>
+            </header>
+            <div class="filter-content collapse show" id="collapse_3">
+              <div class="card-body">
+                <ul class="list-menu">
+                  {% for status in statuses %}
+                  <li><a href="{% url 'dashboard_my_search_complaints' %}?status={{ status.id }}">{{ status.name }}</a></li>
+                  {% endfor %}
+                </ul>
+              </div>
+            </div>
+          </article>
+        </div>
+
+        <!-- Buttons -->
+        <a href="{%url 'my_profile'%}" class="btn btn-outline-primary btn-block">My Profile</a>
+      </aside>
+
+      <!-- Main Content -->
+      <main class="col-md-9">
+        <header class="border-bottom mb-4 pb-2">
+          <h4 class="mb-0">All Complaints of {{wards.ward}}</h4>
+                  <div class="form-inline">
+			    <span class="mr-md-auto"><b>{{ post_count }}</b> complaint found </span>
+           </div>
+        </header>
+
+        <div class="row">
+         {% for complaint in complaints %} {% if not complaint.is_hidden %}
+        <div class="col-md-6 mb-4">
+        <div class="card h-100 shadow-sm position-relative">
+          <!-- Status Badge -->
+          <span
+            class="badge position-absolute top-0 end-0 m-2 {% if complaint.status %} {% if complaint.status.name == 'Pending' %} bg-danger text-white {% elif complaint.status.name == 'In Progress' %} bg-warning text-dark {% elif complaint.status.name == 'Resolved' %} bg-success text-white {% else %} bg-secondary text-white {% endif %} {% else %} bg-secondary text-white {% endif %}"
+          >
+            {{ complaint.status.name|default:"N/A" }}
+          </span>
+
+          <!-- Image -->
+          {% if complaint.image %}
+          <img
+            src="{{ complaint.image.url }}"
+            class="card-img-top"
+            alt="Post media"
+            style="height: 300px; object-fit: contain"
+          />
+          {% else %}
+          <img
+            src="{% static 'images/complain.png' %}"
+            class="card-img-top"
+            alt="No image"
+            style="height: 300px; object-fit: contain"
+          />
+          {% endif %}
+
+          <div class="card-body d-flex flex-column">
+            <h5 class="card-title">{{ complaint.title }}</h5>
+
+            <p class="text-muted mb-2" style="font-size: 1rem">
+              <strong>Date:</strong> {{ complaint.created_at|date:"Y-m-d" }}<br />
+              <strong>Posted by:</strong> {{ complaint.user.username }}<br />
+              <strong>Contact:</strong> {{ complaint.user.phone_number }}<br />
+              <strong>Municipality:</strong> {{ complaint.ward|default:"N/A"}}<br />
+              <strong>Ward:</strong> {% if complaint.ward %}Ward-{{ complaint.ward.ward_number }}{% else %}N/A{% endif %}<br />
+              <strong>Category:</strong> 
+              {{complaint.category.category_name|default:"N/A" }}
+            </p>
+
+            <p class="card-text flex-grow-1">
+              {{ complaint.description|truncatewords:20 }}
+              <a
+                href="{% url 'post_detail' complaint.id %}"
+                class="text-primary"
+                >View more</a
+              >
+            </p>
+
+            <div
+              class="d-flex justify-content-between align-items-center mt-auto"
+            >
+              <!-- Like Button -->
+              {% if user != complaint.user and user.user_type != 'municipality' %}
+              <form
+                method="POST"
+                action="{% url 'like_complaint' complaint.id %}"
+              >
+                {% csrf_token %}
+                <button type="submit" class="btn btn-sm btn-outline-danger">
+                  <i class="fas fa-heart"></i> {{ complaint.likes.count }}
+                </button>
+              </form>
+              {% else %}
+              <button class="btn btn-sm btn-outline-danger" disabled>
+                <i class="fas fa-heart"></i> {{ complaint.likes.count }}
+              </button>
+              {% endif %}
+
+              <!-- Comment Button -->
+              {% if user != complaint.user and user.user_type != 'municipality' %}
+              <a href="{% url 'post_detail' complaint.id %}">
+                <button class="btn btn-sm btn-outline-secondary">
+                  <i class="fas fa-comments"></i> {{ complaint.comments.count }}
+                </button>
+              </a>
+               {% else %}
+                <button class="btn btn-sm btn-outline-secondary" disabled>
+                  <i class="fas fa-comments"></i> {{ complaint.comments.count }}
+                </button>
+                {% endif %}
+
+              <!-- Report Button -->
+              {% if user != complaint.user and user.user_type != 'municipality' %}
+              <form
+                method="POST"
+                action="{% url 'report_complaint' complaint.id %}"
+              >
+                {% csrf_token %}
+                <button type="submit" class="btn btn-sm btn-outline-warning">
+                  <i class="fas fa-flag"></i> {{ complaint.reports.count }}
+                </button>
+              </form>
+              {% else %}
+              <button class="btn btn-sm btn-outline-warning" disabled>
+                <i class="fas fa-flag"></i> {{ complaint.reports.count }}
+              </button>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </div>
+      {% endif %}{% empty %}
+      <p>No complaints found.</p>
+      {% endfor %}
+    </div>
+
+        <!-- Pagination -->
+        <nav class="mt-4" aria-label="Page navigation">
+          {% if posts.has_other_pages %}
+          <ul class="pagination">
+            {% if posts.has_previous %}
+            <li class="page-item"><a class="page-link" href="?page={{ posts.previous_page_number }}">Previous</a></li>
+            {% else %}
+            <li class="page-item disabled"><span class="page-link">Previous</span></li>
+            {% endif %}
+
+            {% for num in posts.paginator.page_range %}
+              {% if posts.number == num %}
+              <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+              {% else %}
+              <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+              {% endif %}
+            {% endfor %}
+
+            {% if posts.has_next %}
+            <li class="page-item"><a class="page-link" href="?page={{ posts.next_page_number }}">Next</a></li>
+            {% else %}
+            <li class="page-item disabled"><span class="page-link">Next</span></li>
+            {% endif %}
+          </ul>
+          {% endif %}
+        </nav>
+      </main>
+    </div>
+  </div>
+</section>
+
+{% endblock %}
