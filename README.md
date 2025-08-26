@@ -23,41 +23,26 @@ A web application designed to facilitate the lodging and management of complaint
    cd Awaz
 Create a virtual environment:
 
-bash
-Copy
-Edit
 python -m venv venv
 Activate the virtual environment:
 
 Windows:
 
-bash
-Copy
-Edit
+
 venv\Scripts\activate
 macOS/Linux:
 
-bash
-Copy
-Edit
 source venv/bin/activate
 Install dependencies:
 
-bash
-Copy
-Edit
+
 pip install -r requirements.txt
 Apply database migrations:
 
-bash
-Copy
-Edit
+
 python manage.py migrate
 Run the development server:
 
-bash
-Copy
-Edit
 python manage.py runserver
 Access the application at http://127.0.0.1:8000/.
 
